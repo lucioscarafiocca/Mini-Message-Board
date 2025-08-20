@@ -2,21 +2,10 @@ const { resolveInclude } = require("ejs")
 const { Router } = require("express")
 const express = require("express")
 const indexRouter = Router()
+const db = require("../db/queries")
 
-const messages = [
-  {
-    text: "Hi there!",
-    user: "Amando",
-    added: new Date(),
-  },
-  {
-    text: "Hello World!",
-    user: "Charles",
-    added: new Date(),
-  },
-]
-
-indexRouter.get("/", (req, res) => {
+indexRouter.get("/", async (req, res) => {
+  const messages = await db.getAllUsernames()
   res.render("index", { title: "Mini Messageboard", messages: messages })
 })
 
@@ -24,20 +13,20 @@ indexRouter.get("/new", (req, res) => {
   res.render("form")
 })
 
-indexRouter.get("/message/:id", (req, res) => {
+indexRouter.get("/message/:id", async (req, res) => {
   const { id } = req.params
+  const user = await db.getUsername(id)
+  console.log(user)
   res.render("message", {
     title: "Your message",
-    message: messages[Number(id)],
+    message: user[0],
   })
 })
 
-indexRouter.post("/new", (req, res) => {
-  messages.push({
-    user: req.body.name,
-    text: req.body.message,
-    added: new Date(),
-  })
+indexRouter.post("/new", async (req, res) => {
+  const user = req.body.name
+  const name = req.body.message
+  await db.addMessage(user, name)
   res.redirect("/")
 })
 
