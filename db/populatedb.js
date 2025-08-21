@@ -1,6 +1,7 @@
 #! /usr/bin/env node
 
 const { Client } = require("pg")
+require("dotenv").config()
 
 const SQL = `
 CREATE TABLE IF NOT EXISTS messages (
@@ -19,7 +20,7 @@ VALUES
 async function main() {
   console.log("seeding...")
   const client = new Client({
-    connectionString: "postgresql://gaiden:juilop123@localhost:5432/messages",
+    connectionString: process.env.DATABASE_URL,
   })
   await client.connect()
   await client.query(SQL)

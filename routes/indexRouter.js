@@ -16,7 +16,6 @@ indexRouter.get("/new", (req, res) => {
 indexRouter.get("/message/:id", async (req, res) => {
   const { id } = req.params
   const user = await db.getUsername(id)
-  console.log(user)
   res.render("message", {
     title: "Your message",
     message: user[0],
